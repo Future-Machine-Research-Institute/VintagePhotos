@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <render-region class="render-region"></render-region>
+    <render-region class="render-region" title = "Hello"></render-region>
     <tools class="tools"></tools>
   </div>
 </template>
