@@ -1,21 +1,14 @@
 <template>
     <div>
-        <el-button class="import-button">导入</el-button>
+        <el-button class="import-button" @click="emit('clickOnImport')">导入</el-button>
     </div>
 </template>
   
 <script setup lang="ts">
-import { method } from 'lodash';
-
 
     const emit = defineEmits<{
-        (e: 'change', id: number): void
-        (e: 'update', value: string): void
+        (e: 'clickOnImport'): void
     }>()
-
-    let clickOnImport = (): void => {
-
-    }
   
 </script>
   

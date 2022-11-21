@@ -1,14 +1,17 @@
 <template>
   <div class="content">
-    <render-region class="render-region" title = "Hello"></render-region>
-    <tools class="tools"></tools>
+    <render-region class="render-region"></render-region>
+    <tools class="tools" @click-on-import="importImage"></tools>
   </div>
 </template>
 
 <script setup lang="ts">
   import RenderRegion from './RenderRegion.vue';
   import Tools from './Tools.vue';
-    
+
+  const importImage = () => {
+    console.log("导入图片")
+  }
 
 </script>
 
