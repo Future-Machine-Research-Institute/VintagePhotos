@@ -8,6 +8,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElInput: typeof import('element-plus/es')['ElInput']
     Home: typeof import('./src/components/Home.vue')['default']
     RenderRegion: typeof import('./src/components/RenderRegion.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

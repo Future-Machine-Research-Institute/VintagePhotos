@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <render-region class="render-region"></render-region>
+    <render-region class="render-region" ref="renderRegion"></render-region>
     <tools class="tools" @click-on-import="importImage"></tools>
   </div>
 </template>
@@ -8,9 +8,12 @@
 <script setup lang="ts">
   import RenderRegion from './RenderRegion.vue';
   import Tools from './Tools.vue';
+  import { ref } from 'vue';
 
-  const importImage = () => {
-    console.log("导入图片")
+  const renderRegion = ref()
+
+  const importImage = (image: File) => {
+    renderRegion.value?.loadImage(image)
   }
 
 </script>

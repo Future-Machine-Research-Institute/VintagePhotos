@@ -1,14 +1,43 @@
 <template>
     <div>
-        <el-button class="import-button" @click="emit('clickOnImport')">导入</el-button>
+        <el-button class="import-button" @click="importFile">导入</el-button>
+        <el-input id="virtual-input" class="virtual-input" v-model="fileName" type="file" accept=".jpg,.png" @change="selectFile" />
+        <el-button class="import-button">shader</el-button>
     </div>
 </template>
   
 <script setup lang="ts">
+    import { ref } from 'vue';
+
+
+    // const reader: FileReader = new FileReader()
+
+    let fileName = ref('')
 
     const emit = defineEmits<{
-        (e: 'clickOnImport'): void
+        (e: 'clickOnImport', image: File): void
     }>()
+
+    const importFile = () => {
+        const input = document.getElementById('virtual-input')!
+        input.click()
+    }
+
+    const selectFile = () => {
+        const input = (document.getElementById('virtual-input') as HTMLInputElement)!
+        const files = input.files
+        if(files !== null) {
+            if(files.length !== 0) {
+                emit('clickOnImport', files[0])
+            }
+            // reader.readAsDataURL(files[0])
+            // reader.onload = (e) => {
+            //     if(e.target?.result instanceof ArrayBuffer) {
+            //         emit('clickOnImport', e.target.result)
+            //     }
+            // }
+        }
+    }
   
 </script>
   
@@ -18,6 +47,15 @@
     width: 80px;
     height: 40px;
     background-color: lightgreen;
+}
+
+.virtual-input {
+    width: 100%;
+    height: 40px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    visibility: hidden;
 }
   
 </style>

@@ -9,6 +9,8 @@
     import * as Three from 'three'
     import { onMounted } from 'vue'
 
+    // const reader: FileReader = new FileReader()
+
     let scene: Three.Scene
     let camera: Three.OrthographicCamera
     let render: Three.WebGLRenderer
@@ -40,20 +42,42 @@
         render.render(scene, camera)
     }
 
-    const load = (imagePath: string) => {
-        loader.loadAsync(imagePath).then(texture => {
-            plane.material = new Three.MeshBasicMaterial({
-                map: texture
+    // const load = (imagePath: string) => {
+    //     loader.loadAsync(imagePath).then(texture => {
+    //         console.log(texture)
+    //         plane.material.map = texture
+    //         plane.material.needsUpdate = true
+    //         render.render(scene, camera)
+    //     }).catch(error => {
+    //         console.log(error)
+    //     })
+    // }
+
+    const temp = new Image()
+    const windowURL = window.URL || window.webkitURL
+    const loadImage = (image: File) => {
+        const url = windowURL.createObjectURL(image)
+        temp.src = url
+        temp.onload = () => {
+            console.log(temp.width)
+            console.log(temp.height)
+            loader.loadAsync(url).then(texture => {
+                windowURL.revokeObjectURL(url)
+                plane.material.map = texture
+                plane.material.needsUpdate = true
+                render.render(scene, camera)
+            }).catch(error => {
+                console.log(error)
             })
-            render.render(scene, camera)
-        }).catch(error => {
-            console.log(error)
-        })
+        }
     }
+
+    defineExpose({
+        loadImage
+    })
     
     onMounted(() => {
         init()
-        load('image.jpg')
     })
 
   
