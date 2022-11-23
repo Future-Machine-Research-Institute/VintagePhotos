@@ -5,7 +5,6 @@
 </template>
   
 <script setup lang="ts">
-    import { ref } from 'vue';
     import * as Three from 'three'
     import { onMounted, watch } from 'vue'
 
@@ -14,18 +13,18 @@
     const CopyShader = {
         uniforms: {
             'tDiffuse': { value: new Three.Texture() },
-            'projectionMatrix': {value: new Three.Matrix4()}
+            'scaleMatrix': {value: new Three.Matrix4()}
         },
 
         vertexShader: /* glsl */`
                 precision mediump float;
-                uniform mat4 projectionMatrix;
+                uniform mat4 scaleMatrix;
                 attribute vec2 uv;
                 attribute vec3 position;
                 varying vec2 vUv;
                 void main() {
                     vUv = uv;
-                    gl_Position = projectionMatrix * vec4( position, 1.0 );
+                    gl_Position = scaleMatrix * vec4( position, 1.0 );
                 }`,
 
         fragmentShader: /* glsl */`
@@ -104,7 +103,7 @@
             scaleX = (widthProportion >= heightProportion) ? (heightProportion / widthProportion) : 1.0
             scaleY = (widthProportion >= heightProportion) ? 1.0 : (widthProportion / heightProportion)
 
-            CopyShader.uniforms.projectionMatrix.value.set(scaleX, 0.0, 0.0, 0.0, 0.0, scaleY, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0)
+            CopyShader.uniforms.scaleMatrix.value.set(scaleX, 0.0, 0.0, 0.0, 0.0, scaleY, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0)
 
             loader.loadAsync(url).then(texture => {
                 windowURL.revokeObjectURL(url)
@@ -136,7 +135,7 @@
             scaleX = (widthProportion >= heightProportion) ? (heightProportion / widthProportion) : 1.0
             scaleY = (widthProportion >= heightProportion) ? 1.0 : (widthProportion / heightProportion)
 
-            CopyShader.uniforms.projectionMatrix.value.set(scaleX, 0.0, 0.0, 0.0, 0.0, scaleY, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0)
+            CopyShader.uniforms.scaleMatrix.value.set(scaleX, 0.0, 0.0, 0.0, 0.0, scaleY, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0)
             plane.material.needsUpdate = true
             render.setSize(container.clientWidth, container.clientHeight)
             render.render(scene, camera)
