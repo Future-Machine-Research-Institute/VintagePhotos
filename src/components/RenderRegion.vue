@@ -1,31 +1,31 @@
 <template>
     <div>
-        <div id="render-image"></div>
+        <div id="render-image" class="render-image"></div>
     </div>
 </template>
   
 <script setup lang="ts">
-
+    import { ref } from 'vue';
     import * as Three from 'three'
-    import { onMounted } from 'vue'
+    import { onMounted, watch } from 'vue'
 
     // const reader: FileReader = new FileReader()
 
     const CopyShader = {
         uniforms: {
-
-            'tDiffuse': { value: new Three.Texture() }
-
+            'tDiffuse': { value: new Three.Texture() },
+            'projectionMatrix': {value: new Three.Matrix4()}
         },
 
         vertexShader: /* glsl */`
                 precision mediump float;
+                uniform mat4 projectionMatrix;
                 attribute vec2 uv;
                 attribute vec3 position;
                 varying vec2 vUv;
                 void main() {
                     vUv = uv;
-                    gl_Position = vec4( position, 1.0 );
+                    gl_Position = projectionMatrix * vec4( position, 1.0 );
                 }`,
 
         fragmentShader: /* glsl */`
@@ -44,8 +44,10 @@
 
     let loader: Three.TextureLoader
 
+    let container: HTMLElement
+
     const init = () => {
-        let container = document.getElementById('render-image')!
+        container = document.getElementById('render-image')!
         loader = new Three.TextureLoader()
         loader.setCrossOrigin('Anonymous')
         scene = new Three.Scene()
@@ -87,8 +89,23 @@
         const url = windowURL.createObjectURL(image)
         temp.src = url
         temp.onload = () => {
-            console.log(temp.width)
-            console.log(temp.height)
+            // console.log("pic width: ", temp.width)
+            // console.log("pic height: ", temp.height)
+            // console.log("container width", container.clientWidth)
+            // console.log("container height", container.clientHeight)
+            // console.log("projectionMatrix: ", CopyShader.uniforms.projectionMatrix)
+
+            let scaleX = 1.0
+            let scaleY = 1.0
+
+            let widthProportion = temp.height / container.clientHeight
+            let heightProportion = temp.width / container.clientWidth
+
+            scaleX = (widthProportion >= heightProportion) ? (heightProportion / widthProportion) : 1.0
+            scaleY = (widthProportion >= heightProportion) ? 1.0 : (widthProportion / heightProportion)
+
+            CopyShader.uniforms.projectionMatrix.value.set(scaleX, 0.0, 0.0, 0.0, 0.0, scaleY, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0)
+
             loader.loadAsync(url).then(texture => {
                 windowURL.revokeObjectURL(url)
                 CopyShader.uniforms.tDiffuse.value = texture
@@ -107,6 +124,23 @@
     onMounted(() => {
         init()
         // load('image.jpg')
+        window.onresize = () =>{
+            console.log(container.clientWidth)
+            console.log(container.clientHeight)
+            let scaleX = 1.0
+            let scaleY = 1.0
+
+            let widthProportion = temp.height / container.clientHeight
+            let heightProportion = temp.width / container.clientWidth
+
+            scaleX = (widthProportion >= heightProportion) ? (heightProportion / widthProportion) : 1.0
+            scaleY = (widthProportion >= heightProportion) ? 1.0 : (widthProportion / heightProportion)
+
+            CopyShader.uniforms.projectionMatrix.value.set(scaleX, 0.0, 0.0, 0.0, 0.0, scaleY, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0)
+            plane.material.needsUpdate = true
+            render.setSize(container.clientWidth, container.clientHeight)
+            render.render(scene, camera)
+        }
     })
 
   
@@ -114,7 +148,7 @@
   
 <style scoped>
 
-#render-image {
+.render-image {
     width: 100%;
     height: 100%;
 }
