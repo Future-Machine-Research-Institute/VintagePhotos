@@ -9,10 +9,12 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ElButton: typeof import('element-plus/es')['ElButton']
     ElInput: typeof import('element-plus/es')['ElInput']
+    FragmentShaderText: typeof import('./src/components/FragmentShaderText.vue')['default']
     Home: typeof import('./src/components/Home.vue')['default']
     RenderRegion: typeof import('./src/components/RenderRegion.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Tools: typeof import('./src/components/Tools.vue')['default']
+    VertexShaderText: typeof import('./src/components/VertexShaderText.vue')['default']
   }
 }

@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <div class="tools-container">
         <el-button class="import-button" @click="importFile">导入</el-button>
         <el-input id="virtual-input" class="virtual-input" v-model="fileName" type="file" accept=".jpg,.png" @change="selectFile" />
-        <el-button class="import-button">shader</el-button>
+        <el-button class="import-button" @click="emit('clickOnShader')">shader</el-button>
     </div>
 </template>
   
@@ -16,6 +16,7 @@
 
     const emit = defineEmits<{
         (e: 'clickOnImport', image: File): void
+        (e: 'clickOnShader'): void
     }>()
 
     const importFile = () => {
@@ -42,6 +43,15 @@
 </script>
   
 <style scoped>
+
+.tools-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
 
 .import-button {
     width: 80px;

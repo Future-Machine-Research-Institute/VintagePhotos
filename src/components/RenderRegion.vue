@@ -6,7 +6,7 @@
   
 <script setup lang="ts">
     import * as Three from 'three'
-    import { onMounted, watch } from 'vue'
+    import { onMounted } from 'vue'
 
     // const reader: FileReader = new FileReader()
 
@@ -116,13 +116,26 @@
         }
     }
 
+    const reRender = () => {
+        try {
+            console.log(CopyShader)
+            plane.material.vertexShader = CopyShader.vertexShader
+            plane.material.fragmentShader = CopyShader.fragmentShader
+            plane.material.needsUpdate = true
+            render.render(scene, camera)
+        } catch (error) {
+            alert(error)
+        }
+    }
+
     defineExpose({
-        loadImage
+        loadImage,
+        reRender,
+        CopyShader
     })
     
     onMounted(() => {
         init()
-        // load('image.jpg')
         window.onresize = () =>{
             console.log(container.clientWidth)
             console.log(container.clientHeight)
